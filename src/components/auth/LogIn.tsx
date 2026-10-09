@@ -1,39 +1,36 @@
-import { Link, useNavigate } from "react-router";
+import { useNavigate, Link } from "react-router";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { useAuth } from "../context/AuthContext";
 import { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 
-export interface IFormInput {
-  name: string;
+export interface IIFormInput {
   email: string;
   password: string;
 }
 
-export default function Auth() {
-  const { handleLogin } = useAuth();
-  const navigate = useNavigate();
-
+export default function LogIn() {
   const [serverError, setServerError] = useState<string | null>(null);
-
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm<IFormInput>();
+    formState: { errors, isSubmitting },
+  } = useForm<IIFormInput>();
+  const navigate = useNavigate();
+  const { handleLogin } = useAuth();
 
-  async function onSubmit(data: IFormInput) {
+  async function onSubmit(data: IIFormInput) {
     try {
-      await axios.post("http://localhost:3000/auth/signin", data, {
+      await axios.post("http://localhost:3000/auth/login", data, {
         withCredentials: true,
       });
 
       handleLogin();
-      return navigate("/");
+      navigate("/");
     } catch (err) {
       const message =
         (axios.isAxiosError(err) && err.response?.data?.error) ||
-        "Erro ao realizar cadastro.";
+        "Erro ao realizar login.";
       setServerError(message);
     }
   }
@@ -41,19 +38,8 @@ export default function Auth() {
   return (
     <div>
       <Link to="/">Home</Link>
-      <h1>Auth page</h1>
-
       {serverError && <p style={{ color: "red" }}>{serverError}</p>}
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <label htmlFor="name">Name</label>
-          <input
-            {...register("name", { required: true, maxLength: 20 })}
-            id="name"
-            type="text"
-          />
-          {errors.name && <p>{errors.name?.message}</p>}
-        </div>
         <div>
           <label htmlFor="email">Email</label>
           <input
@@ -84,7 +70,9 @@ export default function Auth() {
           />
         </div>
         {errors.password && <p>{errors.password?.message}</p>}
-        <button type="submit">Sign In</button>
+        <button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Loging" : "Log In"}
+        </button>
       </form>
     </div>
   );

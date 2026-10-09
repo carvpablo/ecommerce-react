@@ -2,10 +2,13 @@ import { createBrowserRouter } from "react-router";
 import App from "../App.tsx";
 import Home, { Loader as homeLoader } from "../pages/Home.tsx";
 import About from "../components/About.tsx";
-import Auth from "../pages/Auth.tsx";
+
 import ProductDetails, {
   Loader as productLoader,
 } from "../components/ProductDetails.tsx";
+import SigIn from "../components/auth/SignIn.tsx";
+import LogIn from "../components/auth/LogIn.tsx";
+import Cart from "../components/cart/Cart.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -20,8 +23,16 @@ export const router = createBrowserRouter([
         loader: productLoader,
       },
       {
-        path: "/auth",
-        element: <Auth />,
+        path: "/signin",
+        element: <SigIn />,
+      },
+      {
+        path: "/login",
+        element: <LogIn />,
+      },
+      {
+        path: "/cart",
+        element: <Cart />,
       },
     ],
   },
