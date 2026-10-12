@@ -9,6 +9,10 @@ import ProductDetails, {
 import SigIn from "../components/auth/SignIn.tsx";
 import LogIn from "../components/auth/LogIn.tsx";
 import Cart from "../components/cart/Cart.tsx";
+import Orders from "../components/order/Orders.tsx";
+import OrderDetails, {
+  Loader as orderLoader,
+} from "../components/order/OrderDetails.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -33,6 +37,15 @@ export const router = createBrowserRouter([
       {
         path: "/cart",
         element: <Cart />,
+      },
+      {
+        path: "/orders",
+        element: <Orders />,
+      },
+      {
+        path: "/orders/:id",
+        element: <OrderDetails />,
+        loader: orderLoader,
       },
     ],
   },
