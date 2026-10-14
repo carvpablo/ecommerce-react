@@ -23,6 +23,7 @@ export default defineConfig([
         "warn",
         { allowExportNames: ["loader", "action", "Loader"] }, // 👈 Permite loaders e actions
       ],
+      "react-hooks/set-state-in-effect": "off",
     },
   },
 ]);
