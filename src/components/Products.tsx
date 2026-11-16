@@ -1,6 +1,7 @@
 import { type Products as ProductsType } from "../pages/Home";
 import { Link } from "react-router";
 import { ArrowRight, Box } from "lucide-react";
+import { getProductImage } from "../utils/productImages";
 
 export default function Products({ products }: ProductsType) {
   if (!products || products.length === 0) {
@@ -16,16 +17,25 @@ export default function Products({ products }: ProductsType) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       {products.map((product) => {
+        const imageUrl = getProductImage(product.name);
         return (
           <div
             key={product.id}
             className="group flex flex-col bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md hover:border-indigo-200 transition-all duration-200 overflow-hidden"
           >
-            {/* Imagem Placeholder Estilizada */}
+            {/* Imagem do Produto */}
             <div className="h-48 bg-gradient-to-tr from-slate-100 to-indigo-50/50 flex items-center justify-center relative overflow-hidden">
-              <span className="text-5xl font-black text-indigo-200/60 select-none group-hover:scale-110 transition duration-300">
-                {product.name.charAt(0).toUpperCase()}
-              </span>
+              {imageUrl ? (
+                <img
+                  src={imageUrl}
+                  alt={product.name}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              ) : (
+                <span className="text-5xl font-black text-indigo-200/60 select-none group-hover:scale-110 transition duration-300">
+                  {product.name.charAt(0).toUpperCase()}
+                </span>
+              )}
               <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-xs text-xs font-semibold px-2.5 py-1 rounded-full text-slate-600 shadow-xs">
                 {product.stock > 0 ? `${product.stock} em estoque` : "Esgotado"}
               </div>

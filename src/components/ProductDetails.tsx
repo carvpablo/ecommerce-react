@@ -10,6 +10,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { useState } from "react";
+import { getProductImage } from "../utils/productImages";
 
 export async function Loader({ params }: LoaderFunctionArgs) {
   try {
@@ -42,6 +43,7 @@ export default function ProductDetails() {
   const [adding, setAdding] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
   const { addToCart } = useCart();
+  const imageUrl = product ? getProductImage(product.name) : undefined;
 
   if (!product) {
     return (
@@ -81,13 +83,21 @@ export default function ProductDetails() {
       </Link>
 
       <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden grid grid-cols-1 md:grid-cols-2">
-        {/* Lado Esquerdo: Imagem com Placeholder Elegante */}
+        {/* Lado Esquerdo: Imagem do Produto */}
         <div className="bg-gradient-to-br from-slate-50 to-indigo-50/50 p-8 flex items-center justify-center min-h-[360px] md:min-h-full">
-          <div className="w-48 h-48 sm:w-64 sm:h-64 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center">
-            <span className="text-7xl sm:text-8xl font-black text-indigo-300/60 select-none">
-              {product.name.charAt(0).toUpperCase()}
-            </span>
-          </div>
+          {imageUrl ? (
+            <img
+              src={imageUrl}
+              alt={product.name}
+              className="w-full max-w-sm aspect-square object-cover rounded-2xl shadow-sm border border-slate-100"
+            />
+          ) : (
+            <div className="w-48 h-48 sm:w-64 sm:h-64 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center">
+              <span className="text-7xl sm:text-8xl font-black text-indigo-300/60 select-none">
+                {product.name.charAt(0).toUpperCase()}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Lado Direito: Informações e Compra */}
