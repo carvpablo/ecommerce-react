@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import {
   ShoppingBag,
   ArrowLeft,
@@ -7,29 +7,37 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { useCart } from "../../context/CartContext";
-import { useOrder } from "../../context/OrderContext";
+
 import { useState } from "react";
+import axios from "axios";
 
 export default function Cart() {
   const { cart, removeFromCart, updateQuantity, refreshCart } = useCart();
   const products = cart?.products || [];
-  const { addOrder } = useOrder();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   async function handleCheckout() {
     try {
-      setLoading(true);
       setError(null);
-      // 1. Cria o pedido no backend
-      await addOrder();
-      // 2. Atualiza o carrinho (que agora está vazio no banco)
+      setLoading(true);
+      const response = await axios.post(
+        "http://localhost:3000/checkout",
+        {},
+        {
+          withCredentials: true,
+        },
+      );
+
+      if (response.data?.url) {
+        window.location.href = response.data.url;
+      }
+
       await refreshCart();
-      // 3. Redireciona o cliente para a página de pedidos!
-      navigate("/orders");
-    } catch (err: any) {
-      const msg = err.response?.data?.error || "Erro ao finalizar compra.";
+    } catch (err) {
+      const msg =
+        (axios.isAxiosError(err) && err.response?.data?.error) ||
+        "Erro ao iniciar checkout.";
       setError(msg);
     } finally {
       setLoading(false);
