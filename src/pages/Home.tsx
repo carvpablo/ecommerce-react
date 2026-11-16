@@ -3,10 +3,17 @@ import { useLoaderData } from "react-router";
 import Products from "../components/Products";
 import { Sparkles } from "lucide-react";
 import { API_URL } from "../config/api";
+import { getCachedProducts, setCachedProducts } from "../utils/productsCache";
 
 export async function Loader() {
+  const cached = getCachedProducts();
+  if (cached) {
+    return cached;
+  }
+
   try {
     const response = await axios.get(`${API_URL}/products`);
+    setCachedProducts(response.data);
     return response.data;
   } catch (err) {
     const message =
