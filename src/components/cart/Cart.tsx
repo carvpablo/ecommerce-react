@@ -10,6 +10,7 @@ import { useCart } from "../../context/CartContext";
 
 import { useState } from "react";
 import axios from "axios";
+import { API_URL } from "../../config/api";
 
 export default function Cart() {
   const { cart, removeFromCart, updateQuantity, refreshCart } = useCart();
@@ -22,7 +23,7 @@ export default function Cart() {
       setError(null);
       setLoading(true);
       const response = await axios.post(
-        "http://localhost:3000/checkout",
+        `${API_URL}/checkout`,
         {},
         {
           withCredentials: true,

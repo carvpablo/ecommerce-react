@@ -4,6 +4,7 @@ import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { useState } from "react";
 import { UserPlus, User, Mail, Lock, AlertCircle } from "lucide-react";
+import { API_URL } from "../../config/api";
 
 export interface IFormInput {
   name: string;
@@ -25,7 +26,7 @@ export default function SignIn() {
   async function onSubmit(data: IFormInput) {
     setServerError(null);
     try {
-      await axios.post("http://localhost:3000/auth/signin", data, {
+      await axios.post(`${API_URL}/auth/signin`, data, {
         withCredentials: true,
       });
 
@@ -63,7 +64,10 @@ export default function SignIn() {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-slate-700 mb-1.5"
+            >
               Nome Completo
             </label>
             <div className="relative">
@@ -80,12 +84,17 @@ export default function SignIn() {
               />
             </div>
             {errors.name && (
-              <p className="text-xs text-red-500 mt-1 font-medium">{errors.name.message}</p>
+              <p className="text-xs text-red-500 mt-1 font-medium">
+                {errors.name.message}
+              </p>
             )}
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-slate-700 mb-1.5"
+            >
               E-mail
             </label>
             <div className="relative">
@@ -105,12 +114,17 @@ export default function SignIn() {
               />
             </div>
             {errors.email && (
-              <p className="text-xs text-red-500 mt-1 font-medium">{errors.email.message}</p>
+              <p className="text-xs text-red-500 mt-1 font-medium">
+                {errors.email.message}
+              </p>
             )}
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-slate-700 mb-1.5"
+            >
               Senha
             </label>
             <div className="relative">
@@ -127,7 +141,9 @@ export default function SignIn() {
               />
             </div>
             {errors.password && (
-              <p className="text-xs text-red-500 mt-1 font-medium">{errors.password.message}</p>
+              <p className="text-xs text-red-500 mt-1 font-medium">
+                {errors.password.message}
+              </p>
             )}
           </div>
 
@@ -142,7 +158,10 @@ export default function SignIn() {
 
         <div className="text-center text-sm text-slate-500 border-t border-slate-100 pt-6">
           Já tem uma conta?{" "}
-          <Link to="/login" className="font-semibold text-indigo-600 hover:text-indigo-700 hover:underline">
+          <Link
+            to="/login"
+            className="font-semibold text-indigo-600 hover:text-indigo-700 hover:underline"
+          >
             Faça login aqui
           </Link>
         </div>

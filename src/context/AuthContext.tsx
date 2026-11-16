@@ -1,6 +1,7 @@
 import { useState, useContext, createContext, type ReactNode } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios";
+import { API_URL } from "../config/api";
 
 interface AuthContextType {
   isLogged: boolean;
@@ -37,7 +38,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   async function handleLogout() {
     try {
       await axios.post(
-        "http://localhost:3000/auth/logout",
+        `${API_URL}/auth/logout`,
         {},
         { withCredentials: true },
       );

@@ -4,6 +4,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { LogIn as LogInIcon, Mail, Lock, AlertCircle } from "lucide-react";
+import { API_URL } from "../../config/api";
 
 export interface IIFormInput {
   email: string;
@@ -23,7 +24,7 @@ export default function LogIn() {
   async function onSubmit(data: IIFormInput) {
     setServerError(null);
     try {
-      const user = await axios.post("http://localhost:3000/auth/login", data, {
+      const user = await axios.post(`${API_URL}/auth/login`, data, {
         withCredentials: true,
       });
       handleUserName(user.data.name);

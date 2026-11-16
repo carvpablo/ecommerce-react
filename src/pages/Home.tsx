@@ -2,10 +2,11 @@ import axios from "axios";
 import { useLoaderData } from "react-router";
 import Products from "../components/Products";
 import { Sparkles } from "lucide-react";
+import { API_URL } from "../config/api";
 
 export async function Loader() {
   try {
-    const response = await axios.get("http://localhost:3000/products");
+    const response = await axios.get(`${API_URL}/products`);
     return response.data;
   } catch (err) {
     const message =

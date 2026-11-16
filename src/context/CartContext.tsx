@@ -7,6 +7,7 @@ import {
 } from "react";
 import axios from "axios";
 import { useAuth } from "./AuthContext";
+import { API_URL } from "../config/api";
 
 export interface CartItem {
   id: string;
@@ -51,7 +52,7 @@ export default function CartProvider({ children }: { children: ReactNode }) {
   async function fetchCart() {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:3000/cart", {
+      const response = await axios.get(`${API_URL}/cart`, {
         withCredentials: true,
       });
       setCart(response.data.cart);
@@ -77,7 +78,7 @@ export default function CartProvider({ children }: { children: ReactNode }) {
     if (!cart) throw new Error("Usuário não possui carrinho ativo");
 
     await axios.post(
-      "http://localhost:3000/cart",
+      `${API_URL}/cart`,
       {
         cartId: cart.id,
         productId,
@@ -91,7 +92,7 @@ export default function CartProvider({ children }: { children: ReactNode }) {
 
   // 4. Remover item do carrinho
   async function removeFromCart(cartItemId: string) {
-    await axios.delete(`http://localhost:3000/cart/${cartItemId}`, {
+    await axios.delete(`${API_URL}/cart/${cartItemId}`, {
       withCredentials: true,
     });
 
@@ -105,7 +106,7 @@ export default function CartProvider({ children }: { children: ReactNode }) {
     }
 
     await axios.patch(
-      `http://localhost:3000/cart/${cartItemId}`,
+      `${API_URL}/cart/${cartItemId}`,
       { quantity: newQuantity },
       { withCredentials: true },
     );

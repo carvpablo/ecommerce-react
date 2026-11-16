@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useLoaderData, type LoaderFunctionArgs, Link } from "react-router";
 import { type OrderType } from "../../context/OrderContext";
+import { API_URL } from "../../config/api";
 import {
   ArrowLeft,
   PackageCheck,
@@ -13,7 +14,7 @@ import {
 export async function Loader({ params }: LoaderFunctionArgs) {
   try {
     const { id } = params;
-    const response = await axios.get(`http://localhost:3000/orders/${id}`, {
+    const response = await axios.get(`${API_URL}/orders/${id}`, {
       withCredentials: true,
     });
     return response.data;

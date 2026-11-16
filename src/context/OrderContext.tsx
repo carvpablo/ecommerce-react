@@ -7,6 +7,7 @@ import {
 } from "react";
 import { useAuth } from "./AuthContext";
 import axios from "axios";
+import { API_URL } from "../config/api";
 
 export interface OrderItem {
   id: string;
@@ -45,7 +46,7 @@ export default function OrderProvider({ children }: { children: ReactNode }) {
 
   async function fetchOrders() {
     try {
-      const response = await axios.get("http://localhost:3000/orders", {
+      const response = await axios.get(`${API_URL}/orders`, {
         withCredentials: true,
       });
       setOrders(response.data.orders);
@@ -58,7 +59,7 @@ export default function OrderProvider({ children }: { children: ReactNode }) {
   async function createOrder() {
     try {
       await axios.post(
-        "http://localhost:3000/orders",
+        `${API_URL}/orders`,
         {},
         {
           withCredentials: true,

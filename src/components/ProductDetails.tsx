@@ -11,11 +11,12 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { getProductImage } from "../utils/productImages";
+import { API_URL } from "../config/api";
 
 export async function Loader({ params }: LoaderFunctionArgs) {
   try {
     const { id } = params;
-    const response = await axios.get(`http://localhost:3000/products/${id}`);
+    const response = await axios.get(`${API_URL}/products/${id}`);
     return response.data;
   } catch (err) {
     const message =
