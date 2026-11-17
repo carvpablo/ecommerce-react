@@ -103,7 +103,11 @@ export default function Home() {
         )}
 
         {loading ? (
-          <div className="space-y-4">
+          <div
+            aria-busy="true"
+            aria-label="Carregando produtos"
+            className="space-y-4"
+          >
             {slowLoad && (
               <p
                 role="status"
@@ -114,7 +118,7 @@ export default function Home() {
               </p>
             )}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {Array.from({ length: 4 }).map((_, index) => (
+              {Array.from({ length: 8 }).map((_, index) => (
                 <div
                   key={index}
                   className="h-96 bg-white rounded-2xl border border-slate-200/80 animate-pulse motion-reduce:animate-none"

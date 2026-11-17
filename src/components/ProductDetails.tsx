@@ -42,7 +42,10 @@ export default function ProductDetails() {
   const product = data.product;
   const [quantity, setQuantity] = useState(1);
   const [adding, setAdding] = useState(false);
-  const [feedback, setFeedback] = useState<string | null>(null);
+  const [feedback, setFeedback] = useState<{
+    message: string;
+    isError: boolean;
+  } | null>(null);
   const { addToCart } = useCart();
   const imageUrl = product ? getProductImage(product.name) : undefined;
 
@@ -65,9 +68,15 @@ export default function ProductDetails() {
     setFeedback(null);
     try {
       await addToCart(product.id, quantity);
-      setFeedback("Produto adicionado ao carrinho!");
+      setFeedback({
+        message: "Produto adicionado ao carrinho!",
+        isError: false,
+      });
     } catch {
-      setFeedback("Faça login para adicionar ao carrinho.");
+      setFeedback({
+        message: "Faça login para adicionar ao carrinho.",
+        isError: true,
+      });
     } finally {
       setAdding(false);
     }
@@ -77,7 +86,7 @@ export default function ProductDetails() {
     <div className="max-w-5xl mx-auto space-y-6">
       <Link
         to="/"
-        className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-indigo-600 transition"
+        className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-indigo-600 transition"
       >
         <ArrowLeft className="w-4 h-4" />
         Voltar para o catálogo
@@ -85,7 +94,7 @@ export default function ProductDetails() {
 
       <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden grid grid-cols-1 md:grid-cols-2">
         {/* Lado Esquerdo: Imagem do Produto */}
-        <div className="bg-gradient-to-br from-slate-50 to-indigo-50/50 p-8 flex items-center justify-center min-h-[360px] md:min-h-full">
+        <div className="bg-slate-50 p-8 flex items-center justify-center min-h-[360px] md:min-h-full">
           {imageUrl ? (
             <img
               src={imageUrl}
@@ -94,7 +103,7 @@ export default function ProductDetails() {
             />
           ) : (
             <div className="w-48 h-48 sm:w-64 sm:h-64 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center">
-              <span className="text-7xl sm:text-8xl font-black text-indigo-300/60 select-none">
+              <span className="text-7xl sm:text-8xl font-black text-slate-300 select-none">
                 {product.name.charAt(0).toUpperCase()}
               </span>
             </div>
@@ -104,23 +113,23 @@ export default function ProductDetails() {
         {/* Lado Direito: Informações e Compra */}
         <div className="p-6 sm:p-10 flex flex-col justify-between">
           <div>
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-full mb-3">
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+              {product.name}
+            </h1>
+
+            <div className="mt-3 inline-flex items-center gap-2 px-2.5 py-1 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-full tabular-nums">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
               {product.stock > 0
                 ? `${product.stock} disponíveis em estoque`
                 : "Esgotado"}
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
-              {product.name}
-            </h1>
-
             <p className="mt-4 text-slate-600 leading-relaxed text-sm sm:text-base">
               {product.description}
             </p>
 
-            <div className="mt-6 flex items-baseline gap-2">
-              <span className="text-3xl sm:text-4xl font-extrabold text-slate-900">
+            <div className="mt-6 flex flex-wrap items-baseline gap-2">
+              <span className="text-3xl sm:text-4xl font-extrabold text-slate-900 tabular-nums">
                 R${" "}
                 {(product.price / 100).toLocaleString("pt-BR", {
                   minimumFractionDigits: 2,
@@ -128,35 +137,34 @@ export default function ProductDetails() {
                 })}
               </span>
               <span className="text-xs text-slate-500">
-                à vista no PIX ou cartão
+                pagamento em modo teste (Stripe)
               </span>
             </div>
 
             {/* Seletor de Quantidade */}
             <div className="mt-6 flex items-center gap-4">
-              <label
-                htmlFor="qty"
-                className="text-sm font-medium text-slate-700"
-              >
+              <span className="text-sm font-medium text-slate-700">
                 Quantidade:
-              </label>
+              </span>
               <div className="flex items-center border border-slate-300 rounded-xl overflow-hidden bg-slate-50">
                 <button
                   type="button"
+                  aria-label="Diminuir quantidade"
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  className="px-3 py-1.5 text-slate-600 hover:bg-slate-200 transition font-bold"
+                  className="px-3.5 py-2 text-slate-700 hover:bg-slate-200 transition font-bold"
                 >
                   -
                 </button>
-                <span className="px-4 py-1.5 text-sm font-semibold text-slate-800">
+                <span className="px-4 py-2 text-sm font-semibold text-slate-800 tabular-nums">
                   {quantity}
                 </span>
                 <button
                   type="button"
+                  aria-label="Aumentar quantidade"
                   onClick={() =>
                     setQuantity((q) => Math.min(product.stock, q + 1))
                   }
-                  className="px-3 py-1.5 text-slate-600 hover:bg-slate-200 transition font-bold"
+                  className="px-3.5 py-2 text-slate-700 hover:bg-slate-200 transition font-bold"
                 >
                   +
                 </button>
@@ -166,8 +174,15 @@ export default function ProductDetails() {
 
           <div className="mt-8 space-y-4">
             {feedback && (
-              <p className="text-sm text-center font-medium text-emerald-600 bg-emerald-50 p-2.5 rounded-xl border border-emerald-200">
-                {feedback}
+              <p
+                role={feedback.isError ? "alert" : "status"}
+                className={`text-sm text-center font-medium p-2.5 rounded-xl border ${
+                  feedback.isError
+                    ? "text-amber-800 bg-amber-50 border-amber-200"
+                    : "text-emerald-700 bg-emerald-50 border-emerald-200"
+                }`}
+              >
+                {feedback.message}
               </p>
             )}
 

@@ -1,7 +1,15 @@
-import { type Product } from "../context/ProductsContext";
+import { type Product, type ProductType } from "../context/ProductsContext";
 import { Link } from "react-router";
 import { ArrowRight, Box } from "lucide-react";
 import { getProductImage } from "../utils/productImages";
+
+const PRODUCT_TYPE_LABELS: Record<ProductType, string> = {
+  PERIFÉRICO: "Periférico",
+  MONITOR: "Monitor",
+  MOUSEPAD: "Mousepad",
+  CADEIRA: "Cadeira",
+  ACESSÓRIO: "Acessório",
+};
 
 export default function Products({ products }: { products: Product[] }) {
   if (!products || products.length === 0) {
@@ -19,13 +27,16 @@ export default function Products({ products }: { products: Product[] }) {
       {products.map((product) => {
         const imageUrl = getProductImage(product.name);
         const outOfStock = product.stock <= 0;
+        const typeLabel = product.type
+          ? PRODUCT_TYPE_LABELS[product.type]
+          : undefined;
         return (
           <div
             key={product.id}
             className="group relative flex flex-col bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md hover:border-indigo-200 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 transition-all duration-200 overflow-hidden"
           >
             {/* Imagem do Produto */}
-            <div className="h-48 bg-gradient-to-tr from-slate-100 to-indigo-50/50 flex items-center justify-center relative overflow-hidden">
+            <div className="h-48 bg-slate-100 flex items-center justify-center relative overflow-hidden">
               {imageUrl ? (
                 <img
                   src={imageUrl}
@@ -36,11 +47,19 @@ export default function Products({ products }: { products: Product[] }) {
                   }`}
                 />
               ) : (
-                <span className="text-5xl font-black text-indigo-200/60 select-none group-hover:scale-110 transition duration-300">
+                <span className="text-5xl font-black text-slate-300 select-none group-hover:scale-110 transition duration-300">
                   {product.name.charAt(0).toUpperCase()}
                 </span>
               )}
-              <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-xs text-xs font-semibold px-2.5 py-1 rounded-full text-slate-600 shadow-xs">
+              {typeLabel && (
+                <span className="absolute top-3 left-3 bg-white/95 text-xs font-medium px-2.5 py-1 rounded-full text-slate-700 shadow-xs">
+                  {typeLabel}
+                </span>
+              )}
+              <div
+                id={`stock-${product.id}`}
+                className="absolute top-3 right-3 bg-white/95 text-xs font-semibold px-2.5 py-1 rounded-full text-slate-600 shadow-xs tabular-nums"
+              >
                 {outOfStock ? "Esgotado" : `${product.stock} em estoque`}
               </div>
             </div>
@@ -48,9 +67,10 @@ export default function Products({ products }: { products: Product[] }) {
             {/* Conteúdo do Card */}
             <div className="flex-1 p-5 flex flex-col justify-between">
               <div>
-                <h3 className="font-semibold text-slate-900 group-hover:text-indigo-600 transition line-clamp-1 text-base">
+                <h3 className="font-semibold text-slate-900 group-hover:text-slate-700 transition line-clamp-1 text-base">
                   <Link
                     to={`/products/${product.id}`}
+                    aria-describedby={`price-${product.id} stock-${product.id}`}
                     className="focus-visible:outline-none after:absolute after:inset-0 after:content-['']"
                   >
                     {product.name}
@@ -64,7 +84,10 @@ export default function Products({ products }: { products: Product[] }) {
               <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
                 <div>
                   <span className="text-xs text-slate-500 block font-medium">Preço</span>
-                  <span className="text-lg font-bold text-slate-900">
+                  <span
+                    id={`price-${product.id}`}
+                    className="text-lg font-bold text-slate-900 tabular-nums"
+                  >
                     R$ {(product.price / 100).toLocaleString("pt-BR", {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
@@ -74,7 +97,11 @@ export default function Products({ products }: { products: Product[] }) {
 
                 <span
                   aria-hidden="true"
-                  className="inline-flex items-center justify-center gap-1.5 min-h-11 px-4 bg-indigo-600 text-white group-hover:bg-indigo-700 rounded-xl text-sm font-semibold transition"
+                  className={`inline-flex items-center justify-center gap-1.5 min-h-11 px-4 rounded-xl text-sm font-semibold transition ${
+                    outOfStock
+                      ? "bg-slate-100 text-slate-500"
+                      : "bg-slate-100 text-slate-800 group-hover:bg-indigo-600 group-hover:text-white"
+                  }`}
                 >
                   {outOfStock ? "Ver detalhes" : "Ver produto"}
                   <ArrowRight className="w-4 h-4" />
