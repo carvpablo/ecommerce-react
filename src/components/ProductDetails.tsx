@@ -127,7 +127,7 @@ export default function ProductDetails() {
                   maximumFractionDigits: 2,
                 })}
               </span>
-              <span className="text-xs text-slate-400">
+              <span className="text-xs text-slate-500">
                 à vista no PIX ou cartão
               </span>
             </div>

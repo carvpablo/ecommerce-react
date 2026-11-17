@@ -3,6 +3,7 @@ import AuthProvider from "./context/AuthContext";
 import CartProvider from "./context/CartContext";
 import NavBar from "./components/NavBar";
 import OrderProvider from "./context/OrderContext";
+import ProductsProvider from "./context/ProductsContext";
 
 function App() {
   const navigation = useNavigation();
@@ -10,8 +11,9 @@ function App() {
 
   return (
     <AuthProvider>
-      <OrderProvider>
-        <CartProvider>
+      <ProductsProvider>
+        <OrderProvider>
+          <CartProvider>
           <div className="min-h-screen flex flex-col bg-slate-50 text-slate-800 relative">
             {/* Barra de carregamento superior (tipo YouTube / GitHub) */}
             {isNavigating && (
@@ -37,7 +39,8 @@ function App() {
           </div>
         </CartProvider>
       </OrderProvider>
-    </AuthProvider>
+    </ProductsProvider>
+  </AuthProvider>
   );
 }
 

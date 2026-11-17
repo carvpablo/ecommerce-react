@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router";
 import App from "../App.tsx";
-import Home, { Loader as homeLoader } from "../pages/Home.tsx";
+import Home from "../pages/Home.tsx";
 import About from "../components/About.tsx";
 
 import ProductDetails, {
@@ -19,7 +19,7 @@ export const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
-      { index: true, element: <Home />, loader: homeLoader },
+      { index: true, element: <Home /> },
       { path: "/about", element: <About /> },
       {
         path: "products/:id",

@@ -1,5 +1,6 @@
-import { Link } from "react-router";
+import { Link, NavLink, useLocation, useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
+import { useProducts } from "../context/ProductsContext";
 import {
   ShoppingBag,
   ShoppingCart,
@@ -7,18 +8,38 @@ import {
   User,
   LogIn,
   PackageCheck,
+  Search,
+  X,
 } from "lucide-react";
+
+function navLinkClass({ isActive }: { isActive: boolean }) {
+  return `text-sm font-medium transition border-b-2 py-1 ${
+    isActive
+      ? "text-indigo-700 border-indigo-600"
+      : "text-slate-600 border-transparent hover:text-indigo-600"
+  }`;
+}
 
 export default function NavBar() {
   const { isLogged, userName, handleLogout } = useAuth();
+  const { searchQuery, setSearchQuery } = useProducts();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  function handleSearchChange(value: string) {
+    setSearchQuery(value);
+    if (location.pathname !== "/" && value.trim() !== "") {
+      navigate("/");
+    }
+  }
 
   return (
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-xs">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
         {/* Logo */}
         <Link
           to="/"
-          className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 transition"
+          className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 transition shrink-0"
         >
           <div className="bg-indigo-600 text-white p-2 rounded-xl shadow-sm">
             <ShoppingBag className="w-5 h-5" />
@@ -28,31 +49,55 @@ export default function NavBar() {
           </span>
         </Link>
 
+        {/* Barra de Pesquisa */}
+        <div className="flex-1 max-w-md relative">
+          <Search
+            aria-hidden="true"
+            className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+          />
+          <input
+            type="search"
+            aria-label="Buscar produtos"
+            value={searchQuery}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Escape") setSearchQuery("");
+            }}
+            placeholder="Buscar produtos..."
+            className="w-full pl-10 pr-10 py-2 text-sm bg-slate-100/80 border border-slate-200 rounded-xl text-slate-800 placeholder:text-slate-500 focus:outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition [&::-webkit-search-cancel-button]:appearance-none"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery("")}
+              aria-label="Limpar busca"
+              className="absolute right-1.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700 p-1.5 rounded-full transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+
         {/* Links de navegação e ações */}
-        <nav className="flex items-center gap-3 sm:gap-6">
-          <Link
-            to="/"
-            className="text-sm font-medium text-slate-600 hover:text-indigo-600 transition"
-          >
+        <nav aria-label="Principal" className="flex items-center gap-3 sm:gap-6">
+          <NavLink to="/" end className={navLinkClass}>
             Catálogo
-          </Link>
-          <Link
-            to="/about"
-            className="text-sm font-medium text-slate-600 hover:text-indigo-600 transition"
-          >
+          </NavLink>
+          <NavLink to="/about" className={navLinkClass}>
             Sobre
-          </Link>
+          </NavLink>
 
           <div className="h-4 w-px bg-slate-200" />
 
           {isLogged ? (
             <div className="flex items-center gap-3">
               <p className="text-sm font-medium text-slate-600">
-                Hello {userName}!
+                Olá, {userName}!
               </p>
 
               <Link
                 to="/orders"
+                aria-label="Meus pedidos"
                 className="relative flex items-center gap-2 p-2 text-slate-700 hover:text-indigo-600 hover:bg-slate-100 rounded-full transition"
                 title="Meus Pedidos"
               >
@@ -64,6 +109,7 @@ export default function NavBar() {
 
               <Link
                 to="/cart"
+                aria-label="Carrinho"
                 className="relative flex items-center gap-2 p-2 text-slate-700 hover:text-indigo-600 hover:bg-slate-100 rounded-full transition"
                 title="Carrinho"
               >
@@ -75,7 +121,8 @@ export default function NavBar() {
 
               <button
                 onClick={handleLogout}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition"
+                aria-label="Sair"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-700 bg-red-50 hover:bg-red-100 rounded-lg transition"
               >
                 <LogOut className="w-4 h-4" />
                 <span className="hidden sm:inline">Sair</span>

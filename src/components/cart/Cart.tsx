@@ -195,6 +195,11 @@ export default function Cart() {
             >
               {loading ? "Processando..." : "Finalizar Compra"}
             </button>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Pagamento em modo teste, nenhuma cobrança real. No Stripe, use o
+              cartão <span className="font-mono">4242 4242 4242 4242</span>, uma
+              validade futura e qualquer CVC.
+            </p>
           </div>
         </div>
       )}
